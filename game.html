@@ -101,6 +101,7 @@
         }
 
         .login-box {
+			position: relative;
             background-color: #222;
             padding: 30px;
             border-radius: 10px;
@@ -137,6 +138,17 @@
             cursor: pointer;
             text-decoration: underline;
         }
+		.close-btn {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			font-size: 1.5em;
+			cursor: pointer;
+			color: #ff9800;
+			background: none;
+			border: none;
+			font-weight: bold;
+		}
     </style>
 </head>
 <body>
@@ -174,6 +186,7 @@
     <!-- 登录/注册弹出框 -->
     <div class="login-modal" id="loginModal">
         <div class="login-box" id="loginBox">
+			<span class="close-btn" onclick="closeLoginModal()">×</span>
             <h2 id="modalTitle">Login</h2>
             <form id="loginForm">
                 <input type="text" id="username" placeholder="Username" required><br>
@@ -268,9 +281,6 @@
 
     // 页面加载后显示登录框
     window.onload = showLoginModal;
-
-    // 为登录按钮绑定事件
-    document.getElementById('submitBtn').onclick = loginUser;
 </script>
 
 </body>

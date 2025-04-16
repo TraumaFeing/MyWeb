@@ -1,59 +1,65 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import sqlite3
-from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
+CORS(app)
 
-# 数据库初始化
+DB_FILE = 'users.db'
+
+# 初始化数据库
 def init_db():
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        username TEXT UNIQUE,
-                        password TEXT)''')
-    conn.commit()
-    conn.close()
+    if not os.path.exists(DB_FILE):
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
 
-# 注册 API
+init_db()
+
+# 注册接口
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    
-    # 密码哈希
-    hashed_password = generate_password_hash(password)
+    username = data['username']
+    password = data['password']
 
-    # 将新用户插入数据库
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
     try:
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
+        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
-        conn.close()
-        return jsonify({"message": "Registration successful"}), 201
+        return jsonify({'message': 'Registration successful'}), 201
     except sqlite3.IntegrityError:
-        return jsonify({"message": "Username already exists"}), 400
+        return jsonify({'message': 'Username already exists'}), 409
+    finally:
+        conn.close()
 
-# 登录 API
+# 登录接口
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    
-    conn = sqlite3.connect('users.db')
+    username = data['username']
+    password = data['password']
+
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
-    row = cursor.fetchone()
+    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+    user = cursor.fetchone()
     conn.close()
 
-    if row and check_password_hash(row[0], password):
-        return jsonify({"message": "Login successful"}), 200
+    if user:
+        return jsonify({'message': 'Login successful'}), 200
     else:
-        return jsonify({"message": "Invalid username or password"}), 401
+        return jsonify({'message': 'Invalid username or password'}), 401
 
 if __name__ == '__main__':
-    init_db()  # 初始化数据库
-    app.run(debug=True)
+    app.run(host='127.0.0.1', port=5000)
