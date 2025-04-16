@@ -86,6 +86,57 @@
         .back a:hover {
             text-decoration: underline;
         }
+
+        /* 弹出登录框样式 */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff9800;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .login-box button:hover {
+            background-color: #e68900;
+        }
+
+        .toggle-btn {
+            color: #ff9800;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -119,5 +170,86 @@
     <div class="back">
         <a href="index.html">← Back to Home</a>
     </div>
+
+    <!-- 登录/注册弹出框 -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box" id="loginBox">
+            <h2 id="modalTitle">Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required><br>
+                <input type="password" id="password" placeholder="Password" required><br>
+                <button type="button" id="submitBtn">Login</button>
+            </form>
+            <p class="toggle-btn" id="toggleLink">Don't have an account? Register here</p>
+        </div>
+    </div>
+
+    <script>
+        // 显示登录框
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        // 关闭登录框
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        // 切换到注册框
+        function switchToRegister() {
+            document.getElementById('modalTitle').innerText = 'Register';
+            document.getElementById('submitBtn').innerText = 'Register';
+            document.getElementById('toggleLink').innerText = 'Already have an account? Login here';
+            document.getElementById('submitBtn').onclick = registerUser;
+        }
+
+        // 切换到登录框
+        function switchToLogin() {
+            document.getElementById('modalTitle').innerText = 'Login';
+            document.getElementById('submitBtn').innerText = 'Login';
+            document.getElementById('toggleLink').innerText = 'Don\'t have an account? Register here';
+            document.getElementById('submitBtn').onclick = loginUser;
+        }
+
+        // 登录用户
+        function loginUser() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // 这里需要与后端交互来验证用户
+            // 假设用户名为 "test" 和密码为 "password" 时成功登录
+            if (username === 'test' && password === 'password') {
+                document.getElementById('submitBtn').innerText = username;
+                closeLoginModal();
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+
+        // 注册用户
+        function registerUser() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // 这里可以添加注册逻辑，例如发送到后端创建新用户
+            alert('User registered: ' + username);
+            switchToLogin();  // 注册成功后切换回登录框
+        }
+
+        // 切换登录/注册框
+        document.getElementById('toggleLink').onclick = function() {
+            if (document.getElementById('modalTitle').innerText === 'Login') {
+                switchToRegister();
+            } else {
+                switchToLogin();
+            }
+        };
+
+        // 页面加载后显示登录框
+        window.onload = showLoginModal;
+
+        // 为登录按钮绑定事件
+        document.getElementById('submitBtn').onclick = loginUser;
+    </script>
 </body>
 </html>
