@@ -2,40 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Game Project</title>
+    <title>My Game Project - Project Nova</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Orbitron', sans-serif;
             background-color: #111;
             color: #fff;
-            padding: 40px;
             background-image: url('BaseBackground.jpg');
             background-size: cover;
             background-position: center;
+            overflow-x: hidden;
         }
 
-        .container {
+        .intro {
             background: rgba(0, 0, 0, 0.75);
             padding: 30px;
             border-radius: 10px;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        h1 {
+            max-width: 90%;
+            margin: 30px auto;
             text-align: center;
-            font-size: 2.5em;
         }
 
-        p {
-            font-size: 1.2em;
-            line-height: 1.8em;
+        .intro h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            font-size: 1.1em;
+            line-height: 1.6em;
+        }
+
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            margin-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        .gallery {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .gallery img, .gallery video {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+
+        .gallery img:hover, .gallery video:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        h2 {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff9800;
+            text-shadow: 1px 1px 3px #000;
         }
 
         .back {
-            margin-top: 30px;
             text-align: center;
+            margin-top: 40px;
         }
 
         .back a {
@@ -50,26 +89,35 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>My Game: Project Nova</h1>
+    <div class="intro">
+        <h1>Project Nova</h1>
         <p>
-            Project Nova is a first-person roguelike shooter with procedurally generated levels,
-            dynamic enemy AI, and a real-time upgrade system. Players explore diverse environments
-            such as urban ruins, deep forests, and desert wastelands as they uncover the mystery behind a collapsing world.
+            An intense roguelike FPS set in a collapsing world. Explore, shoot, and survive
+            in dynamically generated levels with a rich upgrade system and realistic visuals.
         </p>
-        <p>
-            Features:
-            <ul>
-                <li>🎮 Realistic graphics powered by Unreal Engine 5</li>
-                <li>🔫 Randomized weapons and upgrades</li>
-                <li>🌍 Procedurally generated maps</li>
-                <li>💾 Save/load system and progression tracking</li>
-            </ul>
-        </p>
+    </div>
 
-        <div class="back">
-            <a href="index.html">← Back to Home</a>
+    <div class="content-section">
+        <div class="section">
+            <h2>📸 Screenshots</h2>
+            <div class="gallery">
+                <img src="screenshot1.jpg" alt="Screenshot 1">
+                <img src="screenshot2.jpg" alt="Screenshot 2">
+                <img src="screenshot3.jpg" alt="Screenshot 3">
+            </div>
         </div>
+
+        <div class="section">
+            <h2>🎥 Game Videos</h2>
+            <div class="gallery">
+                <video src="gameplay1.mp4" controls></video>
+                <video src="gameplay2.mp4" controls></video>
+            </div>
+        </div>
+    </div>
+
+    <div class="back">
+        <a href="index.html">← Back to Home</a>
     </div>
 </body>
 </html>
