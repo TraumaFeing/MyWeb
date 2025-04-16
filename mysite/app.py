@@ -9,7 +9,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 CORS(app, supports_credentials=True, resources={
     r"/*": {
         "origins": ["http://localhost", "http://127.0.0.1"],
-        "methods": ["GET", "POST"],
+        "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
 })
@@ -72,13 +72,10 @@ def login():
         cursor = conn.cursor()
         cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
         row = cursor.fetchone()
-        
+
         if row and check_password_hash(row[0], password):
-            session['user'] = username  # 服务器端会话
-            return jsonify({
-                "message": "Login successful",
-                "username": username
-            }), 200
+            session['username'] = username  # 可选，用于服务端会话支持
+            return jsonify({"message": "Login successful"}), 200
         else:
             return jsonify({"message": "Invalid username or password"}), 401
     except Exception as e:
