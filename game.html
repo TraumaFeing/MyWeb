@@ -185,71 +185,93 @@
     </div>
 
     <script>
-        // 显示登录框
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
+    // 显示登录框
+    function showLoginModal() {
+        document.getElementById('loginModal').style.display = 'flex';
+    }
 
-        // 关闭登录框
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
+    // 关闭登录框
+    function closeLoginModal() {
+        document.getElementById('loginModal').style.display = 'none';
+    }
 
-        // 切换到注册框
-        function switchToRegister() {
-            document.getElementById('modalTitle').innerText = 'Register';
-            document.getElementById('submitBtn').innerText = 'Register';
-            document.getElementById('toggleLink').innerText = 'Already have an account? Login here';
-            document.getElementById('submitBtn').onclick = registerUser;
-        }
+    // 切换到注册框
+    function switchToRegister() {
+        document.getElementById('modalTitle').innerText = 'Register';
+        document.getElementById('submitBtn').innerText = 'Register';
+        document.getElementById('toggleLink').innerText = 'Already have an account? Login here';
+        document.getElementById('submitBtn').onclick = registerUser;
+    }
 
-        // 切换到登录框
-        function switchToLogin() {
-            document.getElementById('modalTitle').innerText = 'Login';
-            document.getElementById('submitBtn').innerText = 'Login';
-            document.getElementById('toggleLink').innerText = 'Don\'t have an account? Register here';
-            document.getElementById('submitBtn').onclick = loginUser;
-        }
-
-        // 登录用户
-        function loginUser() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // 这里需要与后端交互来验证用户
-            // 假设用户名为 "test" 和密码为 "password" 时成功登录
-            if (username === 'test' && password === 'password') {
-                document.getElementById('submitBtn').innerText = username;
-                closeLoginModal();
-            } else {
-                alert('Invalid username or password');
-            }
-        }
-
-        // 注册用户
-        function registerUser() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // 这里可以添加注册逻辑，例如发送到后端创建新用户
-            alert('User registered: ' + username);
-            switchToLogin();  // 注册成功后切换回登录框
-        }
-
-        // 切换登录/注册框
-        document.getElementById('toggleLink').onclick = function() {
-            if (document.getElementById('modalTitle').innerText === 'Login') {
-                switchToRegister();
-            } else {
-                switchToLogin();
-            }
-        };
-
-        // 页面加载后显示登录框
-        window.onload = showLoginModal;
-
-        // 为登录按钮绑定事件
+    // 切换到登录框
+    function switchToLogin() {
+        document.getElementById('modalTitle').innerText = 'Login';
+        document.getElementById('submitBtn').innerText = 'Login';
+        document.getElementById('toggleLink').innerText = 'Don\'t have an account? Register here';
         document.getElementById('submitBtn').onclick = loginUser;
-    </script>
+    }
+
+    // 登录用户
+    async function loginUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: username, password: password })
+        });
+
+        const data = await response.json();
+
+        if (response.status === 200) {
+            document.getElementById('submitBtn').innerText = username;
+            closeLoginModal();
+        } else {
+            alert(data.message);
+        }
+    }
+
+    // 注册用户
+    async function registerUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: username, password: password })
+        });
+
+        const data = await response.json();
+
+        if (response.status === 201) {
+            alert(data.message);
+            switchToLogin();  // 注册成功后切换回登录框
+        } else {
+            alert(data.message);
+        }
+    }
+
+    // 切换登录/注册框
+    document.getElementById('toggleLink').onclick = function() {
+        if (document.getElementById('modalTitle').innerText === 'Login') {
+            switchToRegister();
+        } else {
+            switchToLogin();
+        }
+    };
+
+    // 页面加载后显示登录框
+    window.onload = showLoginModal;
+
+    // 为登录按钮绑定事件
+    document.getElementById('submitBtn').onclick = loginUser;
+</script>
+
 </body>
 </html>
