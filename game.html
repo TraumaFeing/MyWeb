@@ -225,50 +225,61 @@
     }
 
     // 登录用户
-    async function loginUser() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+	async function loginUser() {
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+	
+		try {
+			const response = await fetch('/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ username, password })
+			});
 
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: username, password: password })
-        });
+			const data = await response.json();
 
-        const data = await response.json();
+			if (response.ok) {
+				// 登录成功后更新UI
+				document.getElementById('submitBtn').innerText = username;
+				closeLoginModal();
+				// 可以在这里添加登录状态显示
+				alert(`Welcome back, ${username}!`);
+			} else {
+				alert(`Error: ${data.message}`);
+			}
+		} catch (error) {
+			alert('Network error. Please try again later.');
+		}
+	}
 
-        if (response.status === 200) {
-            document.getElementById('submitBtn').innerText = username;
-            closeLoginModal();
-        } else {
-            alert(data.message);
-        }
-    }
+	// 注册用户
+	async function registerUser() {
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+	
+		try {
+			const response = await fetch('/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ username, password })
+			});
 
-    // 注册用户
-    async function registerUser() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+			const data = await response.json();
 
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: username, password: password })
-        });
-
-        const data = await response.json();
-
-        if (response.status === 201) {
-            alert(data.message);
-            switchToLogin();  // 注册成功后切换回登录框
-        } else {
-            alert(data.message);
-        }
-    }
+			if (response.status === 201) {
+				alert('Registration successful! Please login.');
+				switchToLogin();
+			} else {
+				alert(`Error: ${data.message}`);
+			}
+		} catch (error) {
+			alert('Network error. Please try again later.');
+		}
+	}
 
     // 切换登录/注册框
     document.getElementById('toggleLink').onclick = function() {
