@@ -9,32 +9,34 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background-image: url('BaseBackground.jpg'); /* 将背景图片路径修改为 BaseBackground.jpg */
+            background-image: url('BaseBackground.jpg'); /* 确保替换为实际的背景图片 */
             background-size: cover;
             background-position: center;
             color: white;
         }
-        
+
         header {
-            position: absolute;
+            position: fixed; /* 使用固定定位 */
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100px; /* 给 header 设置高度 */
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: rgba(0, 0, 0, 0.5); /* 半透明遮罩 */
+            background: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+            z-index: 10; /* 保证它位于其他内容之上 */
         }
 
         header h1 {
-            font-size: 3em;
+            font-size: 2.5em;
             font-weight: bold;
             margin: 0;
         }
 
         .content {
+            margin-top: 120px; /* 给 content 添加上边距，避免被 header 遮挡 */
             padding: 50px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
@@ -58,7 +60,7 @@
             margin: 0 auto;
             padding: 10px 20px;
             font-size: 1.2em;
-            background-color: #ff5722; /* 按钮背景颜色 */
+            background-color: #ff5722;
             color: white;
             border: none;
             border-radius: 5px;
@@ -67,7 +69,7 @@
         }
 
         .btn:hover {
-            background-color: #e64a19; /* 按钮悬停颜色 */
+            background-color: #e64a19;
         }
 
         .footer {
