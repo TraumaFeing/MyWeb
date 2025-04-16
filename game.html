@@ -153,7 +153,11 @@
 </head>
 <body>
     <div class="intro">
-        <h1>Project Nova</h1>
+        <h1>Project Nova <span id="usernameDisplay"></span></h1>
+		<div class="user-info">
+		<span id="userDisplay">Guest</span>
+		<span class="login-btn" onclick="handleAuthAction()" id="authBtn">Login</span>
+		</div>
         <p>
             An intense roguelike FPS set in a collapsing world. Explore, shoot, and survive
             in dynamically generated levels with a rich upgrade system and realistic visuals.
@@ -198,6 +202,36 @@
     </div>
 
     <script>
+	// 页面加载时检查是否已登录
+	document.addEventListener('DOMContentLoaded', function() {
+		const savedUsername = localStorage.getItem('username');
+		if (savedUsername) {
+			updateUIForLoggedInUser(savedUsername);
+		}
+	});
+	// 处理登录/登出操作
+	function handleAuthAction() {
+		const isLoggedIn = localStorage.getItem('username') !== null;
+		if (isLoggedIn) {
+			logoutUser();
+		} else {
+			showLoginModal();
+		}
+	}
+
+	// 登出功能
+	function logoutUser() {
+		localStorage.removeItem('username');
+		document.getElementById('usernameDisplay').textContent = '';
+		document.getElementById('userDisplay').textContent = 'Guest';
+		document.getElementById('authBtn').textContent = 'Login';
+		alert('Logged out successfully');
+	}
+	function updateUIForLoggedInUser(username) {
+    document.getElementById('usernameDisplay').textContent = `- Welcome, ${username}`;
+    document.getElementById('userDisplay').textContent = username;
+    document.getElementById('authBtn').textContent = 'Logout';
+	}
     // 显示登录框
     function showLoginModal() {
         document.getElementById('loginModal').style.display = 'flex';
@@ -224,28 +258,23 @@
         document.getElementById('submitBtn').onclick = loginUser;
     }
 
-    // 登录用户
-	async function loginUser() {
+    async function loginUser() {
 		const username = document.getElementById('username').value;
 		const password = document.getElementById('password').value;
-	
+
 		try {
 			const response = await fetch('/login', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username, password })
 			});
 
 			const data = await response.json();
 
 			if (response.ok) {
-				// 登录成功后更新UI
-				document.getElementById('submitBtn').innerText = username;
-				closeLoginModal();
-				// 可以在这里添加登录状态显示
-				alert(`Welcome back, ${username}!`);
+				localStorage.setItem('username', username); // 存储用户名
+				updateUIForLoggedInUser(username);         // 更新界面
+				closeLoginModal();                        // 关闭弹窗
 			} else {
 				alert(`Error: ${data.message}`);
 			}
@@ -258,21 +287,22 @@
 	async function registerUser() {
 		const username = document.getElementById('username').value;
 		const password = document.getElementById('password').value;
-	
+
 		try {
 			const response = await fetch('/register', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username, password })
 			});
-
+	
 			const data = await response.json();
 
 			if (response.status === 201) {
-				alert('Registration successful! Please login.');
-				switchToLogin();
+				alert('Registration successful! You will now be logged in.');
+				// 自动填充用户名密码，并模拟点击登录
+				document.getElementById('username').value = username;
+				document.getElementById('password').value = password;
+				loginUser();  // 直接调用登录
 			} else {
 				alert(`Error: ${data.message}`);
 			}
