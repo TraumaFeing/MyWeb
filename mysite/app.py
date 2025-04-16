@@ -3,60 +3,80 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-db = SQLAlchemy(app)
 
-# 数据库初始化
+# 数据库初始化函数
 def init_db():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        username TEXT UNIQUE,
-                        password TEXT)''')
+                        username TEXT UNIQUE NOT NULL,
+                        password TEXT NOT NULL)''')
     conn.commit()
     conn.close()
 
-# 注册 API
+# 在应用启动时初始化数据库
+init_db()
+
+# 注册API
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
+    data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"message": "Missing username or password"}), 400
     
-    # 密码哈希
+    username = data['username']
+    password = data['password']
+    
+    # 验证用户名和密码长度
+    if len(username) < 4 or len(password) < 6:
+        return jsonify({"message": "Username must be at least 4 characters and password 6 characters"}), 400
+    
     hashed_password = generate_password_hash(password)
-
-    # 将新用户插入数据库
+    
     try:
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
+        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", 
+                       (username, hashed_password))
         conn.commit()
-        conn.close()
-        return jsonify({"message": "Registration successful"}), 201
+        return jsonify({"message": "User registered successfully"}), 201
     except sqlite3.IntegrityError:
-        return jsonify({"message": "Username already exists"}), 400
+        return jsonify({"message": "Username already exists"}), 409
+    except Exception as e:
+        return jsonify({"message": f"Registration failed: {str(e)}"}), 500
+    finally:
+        if conn:
+            conn.close()
 
-# 登录 API
+# 登录API
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
+    data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"message": "Missing username or password"}), 400
     
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
-    row = cursor.fetchone()
-    conn.close()
-
-    if row and check_password_hash(row[0], password):
-        return jsonify({"message": "Login successful"}), 200
-    else:
-        return jsonify({"message": "Invalid username or password"}), 401
+    username = data['username']
+    password = data['password']
+    
+    try:
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
+        row = cursor.fetchone()
+        
+        if row and check_password_hash(row[0], password):
+            return jsonify({
+                "message": "Login successful",
+                "username": username
+            }), 200
+        else:
+            return jsonify({"message": "Invalid username or password"}), 401
+    except Exception as e:
+        return jsonify({"message": f"Login failed: {str(e)}"}), 500
+    finally:
+        if conn:
+            conn.close()
 
 if __name__ == '__main__':
-    with app.app_context():  # 设置应用程序上下文
-        db.create_all()
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
