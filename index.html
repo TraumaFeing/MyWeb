@@ -1,1 +1,99 @@
-../../testpage/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Game Development Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('BaseBackground.jpg'); /* 将背景图片路径修改为 BaseBackground.jpg */
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5); /* 半透明遮罩 */
+        }
+
+        header h1 {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .content {
+            padding: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            margin-top: 100px;
+        }
+
+        .content h2 {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #ff5722; /* 按钮背景颜色 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #e64a19; /* 按钮悬停颜色 */
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Game Development Portfolio</h1>
+    </header>
+
+    <div class="content">
+        <h2>About My Work</h2>
+        <p>Here I showcase my journey in game development, with a focus on FPS and roguelike genres. You can check out my projects and progress here!</p>
+        <a href="https://github.com/你的用户名" class="btn">Check My GitHub Projects</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 My Game Development Portfolio</p>
+    </div>
+</body>
+</html>
