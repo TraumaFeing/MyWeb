@@ -50,4 +50,10 @@ def login():
     conn.close()
 
     if row and check_password_hash(row[0], password):
-        return jsonify({"message
+        return jsonify({"message": "Login successful"}), 200
+    else:
+        return jsonify({"message": "Invalid username or password"}), 401
+
+if __name__ == '__main__':
+    init_db()  # 初始化数据库
+    app.run(debug=True)
